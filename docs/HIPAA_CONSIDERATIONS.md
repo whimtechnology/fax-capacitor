@@ -50,8 +50,8 @@ A production deployment of FaxTriage AI would process PHI and must comply with H
 
 ---
 
-## Risk Assessment for Interview Discussion
+## Production Deployment Risk Assessment
 
 **Lowest risk path to production:** On-premise deployment at the practice using a local server, with the Claude API call as the only external data transmission (covered by Anthropic BAA). This minimizes the attack surface and compliance burden.
 
-**Key discussion point:** The HIPAA compliance requirements are not unique to this application — they apply to any healthcare AI tool processing PHI. The architecture is designed to be compliance-ready without being compliance-burdened in the prototype phase. This mirrors how enterprise customers approach proof-of-concept vs. production deployment.
+**Key consideration:** The HIPAA compliance requirements are not unique to this application — they apply to any healthcare AI tool processing PHI. The architecture is designed to be compliance-ready without being compliance-burdened in the prototype phase. This mirrors how enterprise customers approach proof-of-concept vs. production deployment.

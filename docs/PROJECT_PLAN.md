@@ -16,7 +16,7 @@ FaxTriage AI ingests fax PDFs (via watched email inbox, folder drop, or manual u
 
 ### Strategic Relevance
 
-This project serves dual purposes: it addresses a genuine operational pain point in healthcare delivery, and it demonstrates applied AI architecture skills directly relevant to an Anthropic Solutions Architect role.
+This project addresses a genuine operational pain point in healthcare delivery and demonstrates how modern AI capabilities can be applied to document processing workflows in highly constrained environments.
 
 ---
 
@@ -98,13 +98,13 @@ Cloud fax services (eFax, RingCentral, Ooma) have solved the digitization proble
 
 ### Phase 4: Demo Preparation (2–3 hours)
 
-**Goal:** Polish prototype and prepare interview narrative.
+**Goal:** Polish prototype and prepare demonstration materials.
 
 **Tasks:**
 1. End-to-end flow verification with test corpus
 2. Document known limitations honestly
-3. Demo script: problem → live walkthrough → architecture → Phase 2 → meta-narrative
-4. Architecture diagram for screen share
+3. Demo script: problem → live walkthrough → architecture → Phase 2 vision
+4. Architecture diagram
 5. Talking points for HIPAA, scaling, agentic evolution
 
 ---
@@ -139,4 +139,4 @@ Copy-paste prompts for each build phase in a new Claude conversation:
 > "I'm building the frontend for FaxTriage AI. The backend API is running and returns classified fax documents as JSON. I need a React + Tailwind dashboard with: (1) priority queue view color-coded by type; (2) columns: document type, patient name, sending provider, received time, confidence, status; (3) filter/sort controls; (4) detail panel with metadata and PDF viewer; (5) action buttons: mark reviewed, reassign, flag, dismiss, add note. The UI should feel like something a medical office front desk worker would use. Here's my API schema: [paste endpoints]."
 
 ### Step 5: Demo Prep
-> "FaxTriage AI prototype is built and working. I need help preparing for my Anthropic Solutions Architect interview. Please help me: (1) create a clean architecture diagram; (2) write a demo script (15–17 min); (3) prepare answers for likely technical and product questions; (4) identify weak points to acknowledge proactively."
+> "FaxTriage AI prototype is built and working. I need help preparing demonstration materials. Please help me: (1) create a clean architecture diagram; (2) write a demo script (15–17 min); (3) prepare answers for likely technical and product questions; (4) identify weak points to acknowledge proactively."

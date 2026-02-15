@@ -66,7 +66,7 @@ fax-capacitor/
 │   ├── PROJECT_PLAN.md          # Full project plan & build sequence
 │   ├── ARCHITECTURE.md          # Technical architecture details
 │   ├── CLASSIFICATION_TAXONOMY.md # Document types & extraction fields
-│   ├── INTERVIEW_GUIDE.md       # Demo narrative & Q&A prep
+│   ├── DEMO_GUIDE.md            # Demo narrative & walkthrough
 │   └── HIPAA_CONSIDERATIONS.md  # Compliance notes
 ├── prompts/
 │   └── CLASSIFICATION_PROMPT.md # System prompt for Claude Vision API
@@ -95,10 +95,6 @@ fax-capacitor/
 - **All data is synthetic.** No real patient information is used anywhere in this prototype.
 - **This is a prototype/demo**, not production software. See `docs/HIPAA_CONSIDERATIONS.md` for production deployment requirements.
 - **Built collaboratively with Claude** — brainstorming, architecture design, code generation, critical review, and project planning were all done in partnership with Claude, modeling how enterprise customers use the product.
-
-## Context
-
-This prototype was developed as part of an Anthropic Solutions Architect interview process. It demonstrates applied AI architecture in a constrained, real-world healthcare domain — the kind of work an SA helps enterprise customers build.
 
 ---
 

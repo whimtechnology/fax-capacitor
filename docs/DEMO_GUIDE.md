@@ -1,14 +1,14 @@
-# Interview Positioning & Demo Guide
+# Demo Guide
 
 ## Key Messages
 
-1. **Real-world document understanding:** "I identified a genuine healthcare operations problem — manual fax triage — and built an AI pipeline that transforms unstructured fax images into structured, prioritized, actionable data using Claude's Vision capabilities."
+1. **Real-world document understanding:** FaxTriage AI addresses a genuine healthcare operations problem — manual fax triage — by building an AI pipeline that transforms unstructured fax images into structured, prioritized, actionable data using Claude's Vision capabilities.
 
-2. **Constraint navigation:** "Healthcare AI deployment is defined by constraints: HIPAA, legacy infrastructure, user resistance to new systems. This prototype was designed to work within those constraints, not around them. The practice changes nothing about how they receive faxes."
+2. **Constraint navigation:** Healthcare AI deployment is defined by constraints: HIPAA, legacy infrastructure, user resistance to new systems. This prototype was designed to work within those constraints, not around them. The practice changes nothing about how they receive faxes.
 
-3. **Pipeline to agent evolution:** "The MVP is an intelligent document processing pipeline. The architecture supports agentic capabilities in Phase 2 — like automated follow-up for missing information — where the system observes patterns, decides on actions, and executes them autonomously."
+3. **Pipeline to agent evolution:** The MVP is an intelligent document processing pipeline. The architecture supports agentic capabilities in Phase 2 — like automated follow-up for missing information — where the system observes patterns, decides on actions, and executes them autonomously.
 
-4. **Enterprise pattern recognition:** "This pattern — unstructured documents in, structured data out, integrated into existing workflows — is exactly what enterprise customers need across industries. Healthcare is the domain; the architecture is transferable."
+4. **Transferable pattern:** This pattern — unstructured documents in, structured data out, integrated into existing workflows — applies across industries. Healthcare is the domain; the architecture is transferable.
 
 ---
 
@@ -79,10 +79,10 @@ Many already have an EMR (even small ones use Athena, eClinicalWorks, etc.) but 
 **Q: Who's the buyer?**
 Practice manager or office administrator. Not the physician. This is an operations tool, not a clinical tool. The pitch is staff time savings and reduced risk of missed urgent documents.
 
-### Architecture / SA-Specific
+### Architecture
 
-**Q: How would you help an enterprise customer implement something similar?**
-Start with document taxonomy workshop — what types of documents do they process, what are the extraction requirements, what are the downstream workflows? Then prototype the classification pipeline against their actual document corpus. Validate accuracy before building UI. This project followed that exact methodology.
+**Q: How would you implement something similar for a different domain?**
+Start with document taxonomy workshop — what types of documents are being processed, what are the extraction requirements, what are the downstream workflows? Then prototype the classification pipeline against the actual document corpus. Validate accuracy before building UI. This project followed that exact methodology.
 
 **Q: What would you change if you had more time?**
 Automated accuracy benchmarking with a labeled test set. More sophisticated confidence calibration. Email inbox integration for hands-free ingestion. And the agentic follow-up capability, which is the most interesting technical challenge.
