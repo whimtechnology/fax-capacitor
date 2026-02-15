@@ -35,4 +35,8 @@ phase1_validation_results.json
 
 # Uploaded documents (safety — no real PHI should ever be here)
 data/real-faxes/
+data/uploads/
 uploads/
+
+# Database
+*.db
