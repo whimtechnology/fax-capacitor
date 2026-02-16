@@ -55,9 +55,11 @@ class DocumentUpdate(BaseModel):
 
 class DocumentResponse(BaseModel):
     """Full document response model."""
+    # file_path intentionally excluded — use /api/documents/:id/pdf endpoint instead
+    model_config = {"from_attributes": True, "extra": "ignore"}
+
     id: int
     filename: str
-    file_path: str
     upload_time: datetime
     page_count: Optional[int] = None
     status: str
@@ -70,9 +72,6 @@ class DocumentResponse(BaseModel):
     notes: Optional[str] = None
     reviewed_by: Optional[str] = None
     reviewed_at: Optional[datetime] = None
-
-    class Config:
-        from_attributes = True
 
 
 class DocumentListResponse(BaseModel):

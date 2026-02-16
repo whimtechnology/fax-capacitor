@@ -13,6 +13,11 @@ from ..services.document_service import upload_and_process, DocumentProcessingEr
 router = APIRouter(prefix="/api/documents", tags=["upload"])
 
 
+def _strip_file_path(doc: dict) -> dict:
+    """Remove file_path from document dict to prevent leaking internal paths."""
+    return {k: v for k, v in doc.items() if k != 'file_path'}
+
+
 @router.post("/upload", response_model=BatchUploadResponse)
 async def upload_documents(files: List[UploadFile] = File(...)):
     """
@@ -37,7 +42,7 @@ async def upload_documents(files: List[UploadFile] = File(...)):
 
             # Process the document
             doc = upload_and_process(file.filename, content)
-            documents.append(DocumentResponse(**doc))
+            documents.append(DocumentResponse(**_strip_file_path(doc)))
 
         except DocumentProcessingError as e:
             errors.append({

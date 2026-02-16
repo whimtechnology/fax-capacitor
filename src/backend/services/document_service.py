@@ -116,43 +116,64 @@ def process_document(doc_id: int, file_path: Path) -> dict:
 
     except PDFProcessingError as e:
         # Graceful degradation — document MUST appear in the queue
-        db.update_document_classification(
-            doc_id=doc_id,
-            document_type="other",
-            confidence=0.0,
-            priority="high",
-            extracted_fields={"key_details": f"PDF processing failed: {e}"},
-            flags=["pdf_processing_failed"],
-            processing_time_ms=0
-        )
+        try:
+            db.update_document_classification(
+                doc_id=doc_id,
+                document_type="other",
+                confidence=0.0,
+                priority="high",
+                extracted_fields={"key_details": f"PDF processing failed: {e}"},
+                flags=["pdf_processing_failed"],
+                processing_time_ms=0
+            )
+        except Exception:
+            # Last resort — at minimum update status so doc isn't stuck at "processing"
+            try:
+                db.update_document_status(doc_id, 'classified')
+            except Exception:
+                pass  # DB is broken, nothing we can do
         db.log_event(doc_id, 'error', {'error': str(e), 'type': 'pdf_processing'})
         return db.get_document(doc_id)
 
     except ClassificationError as e:
         # Graceful degradation — document MUST appear in the queue
-        db.update_document_classification(
-            doc_id=doc_id,
-            document_type="other",
-            confidence=0.0,
-            priority="high",
-            extracted_fields={"key_details": f"Classification failed: {e}"},
-            flags=["classification_failed"],
-            processing_time_ms=0
-        )
+        try:
+            db.update_document_classification(
+                doc_id=doc_id,
+                document_type="other",
+                confidence=0.0,
+                priority="high",
+                extracted_fields={"key_details": f"Classification failed: {e}"},
+                flags=["classification_failed"],
+                processing_time_ms=0
+            )
+        except Exception:
+            # Last resort — at minimum update status so doc isn't stuck at "processing"
+            try:
+                db.update_document_status(doc_id, 'classified')
+            except Exception:
+                pass  # DB is broken, nothing we can do
         db.log_event(doc_id, 'error', {'error': str(e), 'type': 'classification'})
         return db.get_document(doc_id)
 
     except Exception as e:
         # Graceful degradation — document MUST appear in the queue
-        db.update_document_classification(
-            doc_id=doc_id,
-            document_type="other",
-            confidence=0.0,
-            priority="high",
-            extracted_fields={"key_details": f"Processing failed: {e}"},
-            flags=["processing_failed"],
-            processing_time_ms=0
-        )
+        try:
+            db.update_document_classification(
+                doc_id=doc_id,
+                document_type="other",
+                confidence=0.0,
+                priority="high",
+                extracted_fields={"key_details": f"Processing failed: {e}"},
+                flags=["processing_failed"],
+                processing_time_ms=0
+            )
+        except Exception:
+            # Last resort — at minimum update status so doc isn't stuck at "processing"
+            try:
+                db.update_document_status(doc_id, 'classified')
+            except Exception:
+                pass  # DB is broken, nothing we can do
         db.log_event(doc_id, 'error', {'error': str(e), 'type': 'unknown'})
         return db.get_document(doc_id)
 

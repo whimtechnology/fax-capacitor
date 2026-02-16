@@ -11,8 +11,17 @@ from fastapi.responses import FileResponse
 from .. import database as db
 from ..models import DocumentResponse, DocumentListResponse, DocumentUpdate
 from ..services.document_service import update_document, get_document_file_path
+from ..prompts.classification import VALID_DOCUMENT_TYPES
+
+# Valid statuses for PATCH endpoint
+VALID_STATUSES = {'classified', 'reviewed', 'dismissed', 'flagged'}
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
+
+
+def _strip_file_path(doc: dict) -> dict:
+    """Remove file_path from document dict to prevent leaking internal paths."""
+    return {k: v for k, v in doc.items() if k != 'file_path'}
 
 
 @router.get("", response_model=DocumentListResponse)
@@ -37,7 +46,7 @@ def list_documents(
     )
 
     return DocumentListResponse(
-        documents=[DocumentResponse(**doc) for doc in documents],
+        documents=[DocumentResponse(**_strip_file_path(doc)) for doc in documents],
         total=total,
         limit=limit,
         offset=offset
@@ -50,7 +59,7 @@ def get_document(doc_id: int):
     doc = db.get_document(doc_id)
     if not doc:
         raise HTTPException(status_code=404, detail="Document not found")
-    return DocumentResponse(**doc)
+    return DocumentResponse(**_strip_file_path(doc))
 
 
 @router.patch("/{doc_id}", response_model=DocumentResponse)
@@ -64,6 +73,20 @@ def patch_document(doc_id: int, update: DocumentUpdate):
     - notes: Add/update notes
     - reviewed_by: Mark as reviewed by user
     """
+    # Validate status if provided
+    if update.status is not None and update.status not in VALID_STATUSES:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Invalid status '{update.status}'. Must be one of: {', '.join(sorted(VALID_STATUSES))}"
+        )
+
+    # Validate document_type if provided
+    if update.document_type is not None and update.document_type not in VALID_DOCUMENT_TYPES:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Invalid document_type '{update.document_type}'. Must be one of: {', '.join(sorted(VALID_DOCUMENT_TYPES))}"
+        )
+
     updated = update_document(
         doc_id=doc_id,
         status=update.status,
@@ -75,7 +98,7 @@ def patch_document(doc_id: int, update: DocumentUpdate):
     if not updated:
         raise HTTPException(status_code=404, detail="Document not found")
 
-    return DocumentResponse(**updated)
+    return DocumentResponse(**_strip_file_path(updated))
 
 
 @router.get("/{doc_id}/pdf")
