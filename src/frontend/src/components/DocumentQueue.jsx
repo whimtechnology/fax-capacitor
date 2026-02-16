@@ -65,10 +65,14 @@ function sortDocuments(documents, sort) {
         aVal = a.confidence ?? 0
         bVal = b.confidence ?? 0
         break
-      case 'upload_time':
-        aVal = new Date(a.upload_time).getTime()
-        bVal = new Date(b.upload_time).getTime()
+      case 'upload_time': {
+        // Backend sends UTC timestamps without 'Z' suffix
+        const aTime = a.upload_time?.endsWith('Z') ? a.upload_time : `${a.upload_time}Z`
+        const bTime = b.upload_time?.endsWith('Z') ? b.upload_time : `${b.upload_time}Z`
+        aVal = new Date(aTime).getTime()
+        bVal = new Date(bTime).getTime()
         break
+      }
       default:
         return 0
     }

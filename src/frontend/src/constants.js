@@ -1,13 +1,14 @@
 // Document Type Configuration
+// Keys must match exact snake_case values from backend
 export const DOCUMENT_TYPES = {
   lab_result: { label: 'Lab Result', color: '#7C3AED' },
   referral_response: { label: 'Referral Response', color: '#2563EB' },
-  prior_auth: { label: 'Prior Auth', color: '#DC2626' },
+  prior_auth_decision: { label: 'Prior Auth Decision', color: '#DC2626' },
   pharmacy_request: { label: 'Pharmacy Request', color: '#059669' },
-  insurance: { label: 'Insurance', color: '#6B7280' },
+  insurance_correspondence: { label: 'Insurance Correspondence', color: '#6B7280' },
   records_request: { label: 'Records Request', color: '#D97706' },
   marketing_junk: { label: 'Marketing / Junk', color: '#9CA3AF' },
-  unclassified: { label: 'Unclassified', color: '#3B82F6' }
+  other: { label: 'Needs Review', color: '#3B82F6' }
 }
 
 // Priority Configuration
@@ -28,10 +29,11 @@ export const STATUSES = {
 }
 
 // Flag Configuration
+// Keys must match exact values from backend flags array
 export const FLAGS = {
-  incomplete: { label: 'INCOMPLETE', textColor: '#B91C1C', bgColor: '#FEF2F2', borderColor: '#FECACA' },
-  misdirected: { label: 'MISDIRECTED', textColor: '#7C3AED', bgColor: '#F5F3FF', borderColor: '#DDD6FE' },
-  bundle: { label: 'BUNDLE', textColor: '#B45309', bgColor: '#FFFBEB', borderColor: '#FDE68A' }
+  incomplete_document: { label: 'INCOMPLETE', textColor: '#B91C1C', bgColor: '#FEF2F2', borderColor: '#FECACA' },
+  possibly_misdirected: { label: 'MISDIRECTED', textColor: '#7C3AED', bgColor: '#F5F3FF', borderColor: '#DDD6FE' },
+  multi_document_bundle: { label: 'BUNDLE', textColor: '#B45309', bgColor: '#FFFBEB', borderColor: '#FDE68A' }
 }
 
 // Stat Card Configuration
@@ -49,12 +51,12 @@ export const TYPE_FILTER_OPTIONS = [
   { value: '', label: 'All Types' },
   { value: 'lab_result', label: 'Lab Result' },
   { value: 'referral_response', label: 'Referral Response' },
-  { value: 'prior_auth', label: 'Prior Auth' },
+  { value: 'prior_auth_decision', label: 'Prior Auth Decision' },
   { value: 'pharmacy_request', label: 'Pharmacy Request' },
-  { value: 'insurance', label: 'Insurance' },
+  { value: 'insurance_correspondence', label: 'Insurance Correspondence' },
   { value: 'records_request', label: 'Records Request' },
   { value: 'marketing_junk', label: 'Marketing / Junk' },
-  { value: 'unclassified', label: 'Unclassified' }
+  { value: 'other', label: 'Needs Review' }
 ]
 
 export const STATUS_FILTER_OPTIONS = [
@@ -67,10 +69,10 @@ export const STATUS_FILTER_OPTIONS = [
   { value: 'dismissed', label: 'Dismissed' }
 ]
 
-// Confidence thresholds
+// Confidence thresholds (per design spec)
 export const CONFIDENCE_THRESHOLDS = {
-  high: 0.90,
-  medium: 0.75
+  high: 0.85,
+  medium: 0.65
 }
 
 // Default filter state

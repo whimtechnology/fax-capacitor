@@ -89,5 +89,5 @@ def get_document_pdf(doc_id: int):
     return FileResponse(
         path=file_path,
         media_type="application/pdf",
-        filename=file_path.name
+        headers={"Content-Disposition": "inline"}
     )

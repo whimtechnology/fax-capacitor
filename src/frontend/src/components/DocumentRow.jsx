@@ -4,12 +4,18 @@ import { FlagList } from './FlagBadge'
 import { DOCUMENT_TYPES, STATUSES } from '../constants'
 
 function formatSmartDate(dateStr) {
-  const date = new Date(dateStr)
+  if (!dateStr) return '—'
+
+  // Backend sends UTC timestamps without 'Z' suffix, so append it
+  const utcDateStr = dateStr.endsWith('Z') ? dateStr : `${dateStr}Z`
+  const date = new Date(utcDateStr)
+
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const yesterday = new Date(today)
   yesterday.setDate(yesterday.getDate() - 1)
 
+  // Compare using local date parts (date is now correctly converted to local)
   const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate())
   const timeStr = date.toLocaleTimeString('en-US', {
     hour: 'numeric',
@@ -31,7 +37,7 @@ function formatSmartDate(dateStr) {
 }
 
 function TypeBadge({ type }) {
-  const config = DOCUMENT_TYPES[type] || DOCUMENT_TYPES.unclassified
+  const config = DOCUMENT_TYPES[type] || DOCUMENT_TYPES.other
 
   return (
     <span

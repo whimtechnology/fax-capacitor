@@ -6,7 +6,7 @@ import PdfViewer from './PdfViewer'
 import { updateDocument } from '../api'
 
 function TypeBadge({ type }) {
-  const config = DOCUMENT_TYPES[type] || DOCUMENT_TYPES.unclassified
+  const config = DOCUMENT_TYPES[type] || DOCUMENT_TYPES.other
 
   return (
     <span
@@ -24,12 +24,16 @@ function TypeBadge({ type }) {
 function formatSmartDate(dateStr) {
   if (!dateStr) return '—'
 
-  const date = new Date(dateStr)
+  // Backend sends UTC timestamps without 'Z' suffix, so append it
+  const utcDateStr = dateStr.endsWith('Z') ? dateStr : `${dateStr}Z`
+  const date = new Date(utcDateStr)
+
   const now = new Date()
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const yesterday = new Date(today)
   yesterday.setDate(yesterday.getDate() - 1)
 
+  // Compare using local date parts (date is now correctly converted to local)
   const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate())
   const timeStr = date.toLocaleTimeString('en-US', {
     hour: 'numeric',
@@ -52,7 +56,17 @@ function formatSmartDate(dateStr) {
 
 function formatDocumentDate(dateStr) {
   if (!dateStr) return '—'
-  const date = new Date(dateStr)
+  // For date-only strings (YYYY-MM-DD), parse as local date to avoid timezone shift
+  // For datetime strings, handle UTC properly
+  let date
+  if (dateStr.includes('T')) {
+    const utcDateStr = dateStr.endsWith('Z') ? dateStr : `${dateStr}Z`
+    date = new Date(utcDateStr)
+  } else {
+    // Date-only: parse components directly to avoid timezone issues
+    const [year, month, day] = dateStr.split('-').map(Number)
+    date = new Date(year, month - 1, day)
+  }
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',

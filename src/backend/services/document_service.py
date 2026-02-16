@@ -10,7 +10,7 @@ from typing import Optional
 
 from ..config import settings
 from .. import database as db
-from .pdf_processor import pdf_to_base64_images, get_page_count
+from .pdf_processor import pdf_to_base64_images, get_page_count, PDFProcessingError
 from .classifier import classify_document, ClassificationError
 
 
@@ -114,14 +114,19 @@ def process_document(doc_id: int, file_path: Path) -> dict:
 
         return result.to_dict()
 
+    except PDFProcessingError as e:
+        db.update_document_error(doc_id, str(e))
+        db.log_event(doc_id, 'error', {'error': str(e), 'type': 'pdf_processing'})
+        raise DocumentProcessingError(f"PDF processing failed: {e}")
+
     except ClassificationError as e:
         db.update_document_error(doc_id, str(e))
-        db.log_event(doc_id, 'error', {'error': str(e)})
+        db.log_event(doc_id, 'error', {'error': str(e), 'type': 'classification'})
         raise DocumentProcessingError(f"Classification failed: {e}")
 
     except Exception as e:
         db.update_document_error(doc_id, str(e))
-        db.log_event(doc_id, 'error', {'error': str(e)})
+        db.log_event(doc_id, 'error', {'error': str(e), 'type': 'unknown'})
         raise DocumentProcessingError(f"Processing failed: {e}")
 
 
@@ -232,12 +237,30 @@ def update_document(
 
 
 def get_document_file_path(doc_id: int) -> Optional[Path]:
-    """Get the file path for a document's PDF."""
+    """
+    Get the file path for a document's PDF.
+
+    Includes path traversal protection to ensure the file is within
+    the uploads directory.
+    """
     doc = db.get_document(doc_id)
     if not doc:
         return None
 
     file_path = Path(doc['file_path'])
+
+    # Path traversal protection: resolve to absolute path and verify
+    # it's within the uploads directory
+    try:
+        resolved_path = file_path.resolve()
+        uploads_dir = settings.upload_dir.resolve()
+
+        # Check that the resolved path is within the uploads directory
+        if not str(resolved_path).startswith(str(uploads_dir)):
+            return None
+    except (OSError, ValueError):
+        return None
+
     if not file_path.exists():
         return None
 

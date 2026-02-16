@@ -102,8 +102,24 @@ export default function App() {
       setFilters(DEFAULT_FILTERS)
     } else {
       setStatFilter(key)
-      // Reset dropdown filters when using stat cards
-      setFilters({ type: '', status: '' })
+      // Sync dropdown filters with stat card selection
+      let statusValue = ''
+      switch (key) {
+        case 'unreviewed':
+          statusValue = 'unreviewed'
+          break
+        case 'urgent':
+          statusValue = 'urgent'
+          break
+        case 'reviewed':
+          statusValue = 'reviewed'
+          break
+        case 'flagged':
+          statusValue = 'flagged'
+          break
+        // 'total' = all, keep status as ''
+      }
+      setFilters({ type: '', status: statusValue })
     }
     setSelectedDocumentId(null)
   }

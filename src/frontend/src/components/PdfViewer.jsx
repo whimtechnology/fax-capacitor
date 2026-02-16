@@ -1,8 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { getPdfUrl } from '../api'
 
 export default function PdfViewer({ documentId }) {
   const [error, setError] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  // Reset state when document changes
+  useEffect(() => {
+    setError(false)
+    setIsLoaded(false)
+  }, [documentId])
 
   if (!documentId) {
     return (
@@ -12,7 +19,8 @@ export default function PdfViewer({ documentId }) {
     )
   }
 
-  const pdfUrl = getPdfUrl(documentId)
+  // Add view parameters to encourage inline display
+  const pdfUrl = `${getPdfUrl(documentId)}#toolbar=1&navpanes=0&view=FitH`
 
   if (error) {
     return (
@@ -22,7 +30,7 @@ export default function PdfViewer({ documentId }) {
         </svg>
         <span className="text-gray-400 text-sm">Unable to load PDF</span>
         <a
-          href={pdfUrl}
+          href={getPdfUrl(documentId)}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-2 text-sm text-blue-600 hover:underline"
@@ -34,13 +42,28 @@ export default function PdfViewer({ documentId }) {
   }
 
   return (
-    <div className="pdf-viewer">
-      <iframe
-        src={pdfUrl}
+    <div className="pdf-viewer relative">
+      {!isLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 h-[400px]">
+          <div className="text-gray-400 text-sm">Loading PDF...</div>
+        </div>
+      )}
+      {/* Use object tag with explicit type for inline display, iframe as fallback */}
+      <object
+        data={pdfUrl}
+        type="application/pdf"
         className="w-full h-[400px] border-0"
-        title="PDF Preview"
+        onLoad={() => setIsLoaded(true)}
         onError={() => setError(true)}
-      />
+      >
+        {/* Fallback iframe for browsers that don't support object for PDFs */}
+        <iframe
+          src={pdfUrl}
+          className="w-full h-[400px] border-0"
+          title="PDF Preview"
+          onLoad={() => setIsLoaded(true)}
+        />
+      </object>
     </div>
   )
 }

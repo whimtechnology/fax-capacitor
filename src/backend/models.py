@@ -103,6 +103,7 @@ class StatsSummary(BaseModel):
     counts_by_priority: dict[str, int]
     counts_by_status: dict[str, int]
     documents_today: int
+    flagged_count: int = 0  # Documents with non-empty flags array
     avg_confidence: Optional[float]
     avg_processing_time_ms: Optional[float]
 

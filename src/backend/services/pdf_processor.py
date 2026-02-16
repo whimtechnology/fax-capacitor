@@ -51,28 +51,44 @@ def pdf_to_base64_images_pymupdf(
 
     Returns:
         Tuple of (list of base64 images, success flag)
+
+    Raises:
+        PDFProcessingError: If PDF cannot be opened or rendered
     """
-    doc = fitz.open(pdf_path)
+    try:
+        doc = fitz.open(pdf_path)
+    except Exception as e:
+        raise PDFProcessingError(f"Failed to open PDF: {e}")
+
+    # Check for password-protected PDFs
+    if doc.is_encrypted:
+        doc.close()
+        raise PDFProcessingError("PDF is password-protected and cannot be processed")
+
     images = []
     all_black = True
 
-    for page_num in range(min(pages_to_process, len(doc))):
-        page = doc[page_num]
-        mat = fitz.Matrix(dpi/72, dpi/72)
-        # Render with alpha channel and white background to handle transparency
-        pix = page.get_pixmap(matrix=mat, alpha=True)
+    try:
+        for page_num in range(min(pages_to_process, len(doc))):
+            page = doc[page_num]
+            mat = fitz.Matrix(dpi/72, dpi/72)
+            # Render with alpha channel and white background to handle transparency
+            pix = page.get_pixmap(matrix=mat, alpha=True)
 
-        # If the image appears black, try rendering without alpha
-        img_bytes = pix.tobytes("png")
-        if is_image_black_or_empty(img_bytes):
-            pix = page.get_pixmap(matrix=mat, alpha=False)
+            # If the image appears black, try rendering without alpha
             img_bytes = pix.tobytes("png")
+            if is_image_black_or_empty(img_bytes):
+                pix = page.get_pixmap(matrix=mat, alpha=False)
+                img_bytes = pix.tobytes("png")
 
-        if not is_image_black_or_empty(img_bytes):
-            all_black = False
+            if not is_image_black_or_empty(img_bytes):
+                all_black = False
 
-        b64 = base64.b64encode(img_bytes).decode("utf-8")
-        images.append(b64)
+            b64 = base64.b64encode(img_bytes).decode("utf-8")
+            images.append(b64)
+    except Exception as e:
+        doc.close()
+        raise PDFProcessingError(f"Failed to render PDF page: {e}")
 
     doc.close()
     return images, not all_black
@@ -110,12 +126,20 @@ def pdf_to_base64_images_pdf2image(
     return images
 
 
+class PDFProcessingError(Exception):
+    """Error during PDF processing."""
+    pass
+
+
 def get_page_count(pdf_path: str) -> int:
     """Get the total number of pages in a PDF."""
-    doc = fitz.open(pdf_path)
-    count = len(doc)
-    doc.close()
-    return count
+    try:
+        doc = fitz.open(pdf_path)
+        count = len(doc)
+        doc.close()
+        return count
+    except Exception as e:
+        raise PDFProcessingError(f"Failed to read PDF: {e}")
 
 
 def pdf_to_base64_images(

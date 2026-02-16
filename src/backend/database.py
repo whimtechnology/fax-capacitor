@@ -154,8 +154,10 @@ def update_document(doc_id: int, **fields) -> Optional[dict]:
     if not update_fields:
         return get_document(doc_id)
 
-    # Add reviewed_at if reviewed_by is being set
-    if 'reviewed_by' in update_fields:
+    # Auto-set reviewed_at timestamp when:
+    # 1. reviewed_by is being set, OR
+    # 2. status is being changed to 'reviewed'
+    if 'reviewed_by' in update_fields or update_fields.get('status') == 'reviewed':
         update_fields['reviewed_at'] = datetime.utcnow().isoformat()
 
     set_clause = ", ".join(f"{k} = ?" for k in update_fields.keys())
@@ -197,7 +199,18 @@ def list_documents(
     limit: int = 50,
     offset: int = 0
 ) -> tuple[list[dict], int]:
-    """List documents with filters. Returns (documents, total_count)."""
+    """
+    List documents with filters. Returns (documents, total_count).
+
+    Args:
+        status: Filter by status (single value)
+        document_type: Filter by document type (single value)
+        priority: Filter by priority (supports comma-separated values, e.g., "high,critical")
+        sort_by: Field to sort by
+        sort_order: Sort order ("asc" or "desc")
+        limit: Maximum number of results
+        offset: Offset for pagination
+    """
     conditions = []
     params = []
 
@@ -208,8 +221,15 @@ def list_documents(
         conditions.append("document_type = ?")
         params.append(document_type)
     if priority:
-        conditions.append("priority = ?")
-        params.append(priority)
+        # Support comma-separated priority values (e.g., "high,critical")
+        priority_values = [p.strip() for p in priority.split(',') if p.strip()]
+        if len(priority_values) == 1:
+            conditions.append("priority = ?")
+            params.append(priority_values[0])
+        elif priority_values:
+            placeholders = ','.join('?' * len(priority_values))
+            conditions.append(f"priority IN ({placeholders})")
+            params.extend(priority_values)
 
     where_clause = " WHERE " + " AND ".join(conditions) if conditions else ""
 
@@ -323,12 +343,19 @@ def get_stats() -> dict:
                WHERE processing_time_ms IS NOT NULL"""
         ).fetchone()['avg']
 
+        # Count of flagged documents (where flags is non-empty JSON array)
+        flagged_count = conn.execute(
+            """SELECT COUNT(*) as count FROM documents
+               WHERE flags IS NOT NULL AND flags != '[]' AND flags != 'null'"""
+        ).fetchone()['count']
+
     return {
         'total_documents': total,
         'counts_by_type': counts_by_type,
         'counts_by_priority': counts_by_priority,
         'counts_by_status': counts_by_status,
         'documents_today': today_count,
+        'flagged_count': flagged_count,
         'avg_confidence': round(avg_conf, 3) if avg_conf else None,
         'avg_processing_time_ms': round(avg_time, 1) if avg_time else None,
     }
