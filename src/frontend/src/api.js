@@ -59,7 +59,8 @@ export async function getDocuments(params = {}) {
   const queryString = queryParams.toString()
   const endpoint = queryString ? `/documents?${queryString}` : '/documents'
 
-  return fetchApi(endpoint)
+  const response = await fetchApi(endpoint)
+  return response.documents || response
 }
 
 /**
