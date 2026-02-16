@@ -3,7 +3,14 @@ import { DOCUMENT_TYPES, PRIORITIES, CONFIDENCE_THRESHOLDS } from '../constants'
 import FlagBadge from './FlagBadge'
 import ActionButtons from './ActionButtons'
 import PdfViewer from './PdfViewer'
-import { updateDocument } from '../api'
+import { updateDocument, getPdfUrl } from '../api'
+
+function toTitleCase(name) {
+  if (!name) return name
+  return name.replace(/\b\w+/g, word =>
+    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+  )
+}
 
 function TypeBadge({ type }) {
   const config = DOCUMENT_TYPES[type] || DOCUMENT_TYPES.other
@@ -109,7 +116,8 @@ export default function DocumentDetail({ document, onClose, onAction }) {
   const patientDob = extracted_fields?.patient_dob
   const facility = extracted_fields?.sending_facility
   const provider = extracted_fields?.sending_provider
-  const phoneNumber = extracted_fields?.phone_number
+  // Check multiple potential phone fields from extracted_fields
+  const phoneNumber = extracted_fields?.phone_number || extracted_fields?.sender_phone || extracted_fields?.provider_phone || extracted_fields?.callback_number
   const faxNumber = extracted_fields?.fax_origin_number
   const keyDetails = extracted_fields?.key_details
   const documentDate = extracted_fields?.document_date
@@ -171,7 +179,7 @@ export default function DocumentDetail({ document, onClose, onAction }) {
           </button>
         </div>
 
-        <h2 className="text-xl font-bold text-gray-900">{patientName}</h2>
+        <h2 className="text-xl font-bold text-gray-900">{toTitleCase(patientName)}</h2>
         {patientDob && (
           <p className="text-sm text-gray-500 mt-1">
             DOB: {formatDocumentDate(patientDob)}
@@ -216,20 +224,22 @@ export default function DocumentDetail({ document, onClose, onAction }) {
         {provider && (
           <p className="text-sm text-gray-600">{provider}</p>
         )}
-        <div className="mt-2 flex flex-wrap gap-3">
-          {phoneNumber && (
-            <span className="text-sm text-blue-600 flex items-center gap-1">
-              <span>&#128222;</span>
-              <span className="font-mono">{phoneNumber}</span>
-            </span>
-          )}
-          {faxNumber && (
-            <span className="text-sm text-gray-500 flex items-center gap-1">
-              <span>&#128224;</span>
-              <span className="font-mono">{faxNumber}</span>
-            </span>
-          )}
-        </div>
+        {(phoneNumber || faxNumber) && (
+          <div className="mt-2 flex flex-col gap-1">
+            {phoneNumber && (
+              <span className="text-sm text-blue-600 flex items-center gap-1">
+                <span title="Phone">&#128222;</span>
+                <span className="font-mono">{phoneNumber}</span>
+              </span>
+            )}
+            {faxNumber && (
+              <span className="text-sm text-gray-500 flex items-center gap-1">
+                <span title="Fax">&#128224;</span>
+                <span className="font-mono">{faxNumber}</span>
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Summary */}
@@ -281,7 +291,19 @@ export default function DocumentDetail({ document, onClose, onAction }) {
 
       {/* PDF Preview */}
       <div className="px-4 py-3 border-b border-gray-200">
-        <h3 className="text-xs font-semibold text-gray-400 uppercase mb-2">Preview</h3>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-xs font-semibold text-gray-400 uppercase">Preview</h3>
+          <button
+            onClick={() => window.open(getPdfUrl(id), '_blank')}
+            className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
+            title="Open PDF in new tab"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+            Open in new tab
+          </button>
+        </div>
         <PdfViewer documentId={id} />
       </div>
 

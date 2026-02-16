@@ -115,19 +115,46 @@ def process_document(doc_id: int, file_path: Path) -> dict:
         return result.to_dict()
 
     except PDFProcessingError as e:
-        db.update_document_error(doc_id, str(e))
+        # Graceful degradation — document MUST appear in the queue
+        db.update_document_classification(
+            doc_id=doc_id,
+            document_type="other",
+            confidence=0.0,
+            priority="high",
+            extracted_fields={"key_details": f"PDF processing failed: {e}"},
+            flags=["pdf_processing_failed"],
+            processing_time_ms=0
+        )
         db.log_event(doc_id, 'error', {'error': str(e), 'type': 'pdf_processing'})
-        raise DocumentProcessingError(f"PDF processing failed: {e}")
+        return db.get_document(doc_id)
 
     except ClassificationError as e:
-        db.update_document_error(doc_id, str(e))
+        # Graceful degradation — document MUST appear in the queue
+        db.update_document_classification(
+            doc_id=doc_id,
+            document_type="other",
+            confidence=0.0,
+            priority="high",
+            extracted_fields={"key_details": f"Classification failed: {e}"},
+            flags=["classification_failed"],
+            processing_time_ms=0
+        )
         db.log_event(doc_id, 'error', {'error': str(e), 'type': 'classification'})
-        raise DocumentProcessingError(f"Classification failed: {e}")
+        return db.get_document(doc_id)
 
     except Exception as e:
-        db.update_document_error(doc_id, str(e))
+        # Graceful degradation — document MUST appear in the queue
+        db.update_document_classification(
+            doc_id=doc_id,
+            document_type="other",
+            confidence=0.0,
+            priority="high",
+            extracted_fields={"key_details": f"Processing failed: {e}"},
+            flags=["processing_failed"],
+            processing_time_ms=0
+        )
         db.log_event(doc_id, 'error', {'error': str(e), 'type': 'unknown'})
-        raise DocumentProcessingError(f"Processing failed: {e}")
+        return db.get_document(doc_id)
 
 
 def upload_and_process(filename: str, file_content: bytes) -> dict:
@@ -178,12 +205,8 @@ def upload_and_process(filename: str, file_content: bytes) -> dict:
         'page_count': page_count,
     })
 
-    # Process through classification
-    try:
-        process_document(doc_id, file_path)
-    except DocumentProcessingError:
-        # Document is marked as error in the DB, but we can still return it
-        pass
+    # Process through classification (always succeeds — errors result in fallback values)
+    process_document(doc_id, file_path)
 
     # Return the complete document record
     return db.get_document(doc_id)

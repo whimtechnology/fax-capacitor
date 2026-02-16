@@ -3,6 +3,13 @@ import ConfidenceBadge from './ConfidenceBadge'
 import { FlagList } from './FlagBadge'
 import { DOCUMENT_TYPES, STATUSES } from '../constants'
 
+function toTitleCase(name) {
+  if (!name) return name
+  return name.replace(/\b\w+/g, word =>
+    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+  )
+}
+
 function formatSmartDate(dateStr) {
   if (!dateStr) return '—'
 
@@ -90,7 +97,7 @@ export default function DocumentRow({ document, isSelected, onClick }) {
       </td>
       <td className="px-3 py-3">
         {patientName ? (
-          <span className="text-sm text-gray-900">{patientName}</span>
+          <span className="text-sm text-gray-900">{toTitleCase(patientName)}</span>
         ) : (
           <span className="text-sm text-gray-400 italic">No patient</span>
         )}

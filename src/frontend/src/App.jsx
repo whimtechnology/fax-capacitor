@@ -177,18 +177,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header />
-      <StatsBar
-        stats={stats}
-        activeFilter={activeStatFilter}
-        onFilterClick={handleStatCardClick}
-      />
-      <UploadZone onUploadComplete={handleUploadComplete} />
-      <FilterBar
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        documentCount={documents.length}
-      />
+      {/* Sticky header section */}
+      <div className="sticky top-0 z-20 bg-gray-100 shadow-sm">
+        <Header />
+        <StatsBar
+          stats={stats}
+          activeFilter={activeStatFilter}
+          onFilterClick={handleStatCardClick}
+        />
+        <UploadZone onUploadComplete={handleUploadComplete} />
+        <FilterBar
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          documentCount={documents.length}
+        />
+      </div>
 
       <div className="flex">
         <div className={`flex-1 p-6 ${selectedDocument ? 'pr-0' : ''}`}>

@@ -56,10 +56,11 @@ You MUST check for and apply these flags when the conditions are met:
    - Cover sheet references attachments that are not present
 
 2. "multi_document_bundle" — Apply this flag when:
-   - Fax contains multiple DISTINCT document types stapled together (e.g., lab results + referral letter + insurance form)
+   - Fax contains MORE THAN 5 PAGES of mixed, distinct document types
    - Document is a "chart dump" with many unrelated pages
-   - More than 5 pages of mixed content types
-   - Multiple different patient encounters in one fax
+   - Do NOT apply this flag for documents with 5 or fewer pages, even if they contain multiple content types (e.g., a referral with an attached prior auth is normal, not a bundle)
+   - The key threshold is PAGE COUNT, not content variety — short faxes with 2-3 related document types are routine in healthcare
+   - Multiple different patient encounters in one fax (regardless of page count)
 
 3. "possibly_misdirected" — Apply this flag when:
    - TO: line names a different provider/practice (not Whispering Pines or Dr. Sato)
@@ -101,7 +102,7 @@ Respond with ONLY a JSON object (no markdown, no explanation, no code fences):
 - If the document is ONLY a cover sheet with no attached content, classify as "other" AND add "incomplete_document" to flags
 - ALWAYS check the flag conditions above and apply flags when conditions are met — an empty flags array should only occur when NONE of the flag conditions apply
 - If multiple pages are provided, base classification on the overall document, not individual pages
-- When documents exceed 5 pages with mixed content, apply "multi_document_bundle" flag"""
+- When documents exceed 5 pages with mixed content types, apply "multi_document_bundle" flag — but do NOT apply this flag to documents of 5 pages or fewer regardless of content variety"""
 
 # Valid document types for validation
 VALID_DOCUMENT_TYPES = [

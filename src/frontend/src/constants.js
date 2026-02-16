@@ -39,8 +39,8 @@ export const FLAGS = {
 // Stat Card Configuration
 export const STAT_CARDS = [
   { key: 'total', label: 'Total Faxes', color: '#111827', clickable: true },
-  { key: 'unreviewed', label: 'Unreviewed', color: '#EA580C', clickable: true },
   { key: 'urgent', label: 'Urgent', color: '#DC2626', clickable: true },
+  { key: 'unreviewed', label: 'Unreviewed', color: '#EA580C', clickable: true },
   { key: 'reviewed', label: 'Reviewed', color: '#16A34A', clickable: true },
   { key: 'flagged', label: 'Flagged', color: '#D97706', clickable: true },
   { key: 'confidence', label: 'Avg Confidence', color: '#2563EB', clickable: false }
@@ -85,7 +85,7 @@ export const DEFAULT_FILTERS = {
 export const SORT_COLUMNS = [
   { key: 'priority', label: '', sortable: true, width: 'w-10' },
   { key: 'document_type', label: 'Type', sortable: true, width: 'w-auto' },
-  { key: 'flags', label: 'Flags', sortable: false, width: 'w-20' },
+  { key: 'flags', label: 'Tags', sortable: false, width: 'w-20' },
   { key: 'patient_name', label: 'Patient', sortable: true, width: 'w-auto' },
   { key: 'sending_facility', label: 'From', sortable: true, width: 'w-auto' },
   { key: 'confidence', label: 'Conf.', sortable: true, width: 'w-auto' },

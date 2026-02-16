@@ -148,10 +148,54 @@ def classify_document(
 
             result = json.loads(response_text)
 
-            # Validate response structure
+            # Validate response structure and handle recoverable errors gracefully
             errors = validate_classification(result)
             if errors:
-                raise ClassificationError(f"Invalid response: {', '.join(errors)}")
+                # Check if this is truly unrecoverable (missing required fields entirely)
+                if 'extracted_fields' not in result:
+                    raise ClassificationError(f"Unrecoverable: missing extracted_fields. Errors: {', '.join(errors)}")
+
+                # Recoverable errors — fix them and continue
+                original_issues = []
+
+                # Handle invalid document_type
+                if result.get("document_type") not in VALID_DOCUMENT_TYPES:
+                    original_type = result.get("document_type")
+                    original_issues.append(f"invalid document_type '{original_type}'")
+                    result["document_type"] = "other"
+
+                # Handle invalid priority
+                if result.get("priority") not in VALID_PRIORITIES:
+                    original_priority = result.get("priority")
+                    original_issues.append(f"invalid priority '{original_priority}'")
+                    result["priority"] = "high"
+
+                # Handle confidence out of range
+                confidence = result.get("confidence", 0.0)
+                if not isinstance(confidence, (int, float)):
+                    result["confidence"] = 0.0
+                    original_issues.append(f"invalid confidence type")
+                elif confidence < 0.0:
+                    result["confidence"] = 0.0
+                    original_issues.append(f"confidence clamped from {confidence}")
+                elif confidence > 1.0:
+                    result["confidence"] = 1.0
+                    original_issues.append(f"confidence clamped from {confidence}")
+
+                # Ensure priority is high for documents that needed correction
+                result["priority"] = "high"
+
+                # Add the invalid_classification flag
+                if "flags" not in result or not isinstance(result["flags"], list):
+                    result["flags"] = []
+                result["flags"].append("invalid_classification")
+
+                # Add note about original issues to extracted_fields
+                note = f"Classification corrected: {', '.join(original_issues)}"
+                if "key_details" in result.get("extracted_fields", {}):
+                    result["extracted_fields"]["key_details"] = f"{note}. {result['extracted_fields']['key_details']}"
+                else:
+                    result.setdefault("extracted_fields", {})["key_details"] = note
 
             # Build token usage dict
             token_usage = {
