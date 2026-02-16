@@ -53,9 +53,20 @@ export default function UploadZone({ onUploadComplete }) {
 
     try {
       const result = await uploadDocuments(files)
+
+      // Build message based on success/failure counts
+      let message
+      if (result.failed === 0) {
+        message = `${result.uploaded} document(s) classified successfully`
+      } else if (result.uploaded === 0) {
+        message = `${result.failed} document(s) failed to process`
+      } else {
+        message = `${result.uploaded} classified, ${result.failed} failed`
+      }
+
       setUploadStatus({
-        type: 'success',
-        message: `${result.length} document(s) classified successfully`
+        type: result.uploaded > 0 ? 'success' : 'error',
+        message
       })
       onUploadComplete?.()
 
