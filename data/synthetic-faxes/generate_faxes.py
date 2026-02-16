@@ -21,7 +21,7 @@ from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
 from pypdf import PdfReader, PdfWriter
 import io
 
-OUTPUT_DIR = "/home/claude/faxes"
+OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 W, H = letter  # 612 x 792
@@ -794,7 +794,7 @@ def create_insurance_correspondence():
     c.setFont("Helvetica", 9)
     c.drawString(36, y, "TO: Whispering Pines Family Medicine — Billing Department")
     y -= 14
-    c.drawString(36, y, "FAX: (555) 867-5310")
+    c.drawString(36, y, "FAX: (555) 867-5309")
     y -= 20
 
     c.setFont("Helvetica-Bold", 11)

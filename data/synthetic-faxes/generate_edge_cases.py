@@ -19,7 +19,7 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from pypdf import PdfReader, PdfWriter
 
-OUTPUT_DIR = "/home/claude/faxes"
+OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 W, H = letter
