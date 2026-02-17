@@ -17,9 +17,10 @@ class Settings(BaseSettings):
     # API Keys - check both variable names
     anthropic_api_key: str = ""
 
-    # Paths
-    upload_dir: Path = PROJECT_ROOT / "data" / "uploads"
-    database_path: Path = PROJECT_ROOT / "data" / "faxtriage.db"
+    # Paths (env-configurable for production deployment)
+    database_path: Path = Path(os.environ.get("DATABASE_PATH", str(PROJECT_ROOT / "data" / "faxtriage.db")))
+    upload_dir: Path = Path(os.environ.get("UPLOAD_DIR", str(PROJECT_ROOT / "data" / "uploads")))
+    frontend_dist: Path = Path(os.environ.get("FRONTEND_DIST", str(PROJECT_ROOT / "src" / "frontend" / "dist")))
 
     # Claude model
     claude_model: str = "claude-sonnet-4-20250514"
@@ -33,6 +34,8 @@ class Settings(BaseSettings):
         "http://localhost:3000",  # Common React dev port
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3000",
+        "https://faxcapacitor.xyz",  # Production
+        "https://www.faxcapacitor.xyz",  # Production www
     ]
 
     class Config:

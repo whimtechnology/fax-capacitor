@@ -9,6 +9,7 @@ Run with:
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from .config import settings
 from .database import init_database
@@ -64,3 +65,20 @@ def mount_static_files():
         StaticFiles(directory=str(settings.upload_dir)),
         name="uploads"
     )
+
+
+# Serve frontend static files in production
+if settings.frontend_dist.exists():
+    # Serve static assets (JS, CSS, images)
+    app.mount("/assets", StaticFiles(directory=settings.frontend_dist / "assets"), name="static_assets")
+
+    # Serve other static files at root level (favicon, etc.)
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        """Serve the React SPA for any non-API route."""
+        # Try to serve the exact file first
+        file_path = settings.frontend_dist / full_path
+        if full_path and file_path.exists() and file_path.is_file():
+            return FileResponse(file_path)
+        # Fall back to index.html for SPA routing
+        return FileResponse(settings.frontend_dist / "index.html")
