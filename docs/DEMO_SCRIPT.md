@@ -130,4 +130,4 @@ Expected output shape:
 - Running frontend without backend leads to empty/error API responses.
 - Reusing stale browser tab can hide latest queue state; refresh before the live segment.
 - Large PDFs can take longer; keep demo set to 2-5 synthetic files.
-- On first run, dependency install time can consume demo time; pre-install before interview day.
+- On first run, dependency install time can consume demo time; pre-install before demo day.

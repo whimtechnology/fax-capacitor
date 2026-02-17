@@ -41,7 +41,7 @@ Cloud fax services (eFax, RingCentral, Ooma) have solved the digitization proble
 3. Web-based React dashboard with prioritized queue
 4. Manual upload interface (drag-and-drop / file picker)
 5. Optimized system prompts for classification accuracy
-6. Demo narrative for interview presentation
+6. Workflow narrative for demo presentation
 
 ### Explicitly Out of Scope
 
