@@ -1,0 +1,16 @@
+node_modules
+src/frontend/node_modules
+src/frontend/dist
+__pycache__
+*.pyc
+.git
+.github
+.env
+data/faxtriage.db
+data/uploads/*
+docs/
+prompts/
+scripts/
+*.md
+phase1_validation_results.json
+.gitignore
