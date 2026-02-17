@@ -27,7 +27,9 @@ Prototype/MVP in active development using synthetic data only; production harden
 ![Architecture diagram](docs/ARCHITECTURE_DIAGRAM.svg)
 
 ### Demo (8-10 minutes)
-Use `/docs/DEMO_SCRIPT.md` for copy/paste commands, expected outputs, and a short spoken narrative.
+**Live:** [faxcapacitor.xyz](https://faxcapacitor.xyz)
+
+See `/docs/DEMO_SCRIPT.md` for local setup commands, expected outputs, and a short spoken narrative.
 
 ---
 
@@ -77,43 +79,59 @@ The practice changes nothing about how they receive faxes. They gain an AI-power
 | Layer | Technology | Rationale |
 |-------|-----------|-----------|
 | Frontend | React + Tailwind CSS | Fast prototyping, responsive, familiar |
-| Backend | Python FastAPI or Node.js/Express | Lightweight API; Python preferred for PDF processing |
+| Backend | Python FastAPI | Lightweight API layer with PDF processing |
 | AI Engine | Claude API (Sonnet) — Vision | Best-in-class document understanding |
 | Storage | SQLite (MVP) → PostgreSQL | Zero-config prototype; easy migration |
 | PDF Processing | PyMuPDF / pdf2image | Page extraction, image conversion for Vision API |
+
+## Deployment
+
+| Component | Detail |
+|-----------|--------|
+| Hosting | [Railway](https://railway.app) — single container serving frontend + API |
+| Domain | [faxcapacitor.xyz](https://faxcapacitor.xyz) |
+| Container | Multi-stage Dockerfile (Node build → Python runtime) |
+| CI/CD | Auto-deploy from `main` branch via Railway GitHub integration |
 
 ## Project Structure
 
 ```
 fax-capacitor/
 ├── README.md
+├── Dockerfile
+├── railway.toml
+├── requirements.txt
 ├── docs/
-│   ├── PROJECT_PLAN.md          # Full project plan & build sequence
-│   ├── ARCHITECTURE.md          # Technical architecture details
-│   ├── CLASSIFICATION_TAXONOMY.md # Document types & extraction fields
-│   ├── DEMO_GUIDE.md            # Demo narrative & walkthrough
-│   └── HIPAA_CONSIDERATIONS.md  # Compliance notes
+│   ├── PROJECT_PLAN.md                # Full project plan & build sequence
+│   ├── ARCHITECTURE.md                # Technical architecture details
+│   ├── ARCHITECTURE_DIAGRAM.svg       # Visual pipeline diagram
+│   ├── CLASSIFICATION_TAXONOMY.md     # Document types & extraction fields
+│   ├── DEMO_SCRIPT.md                 # Demo walkthrough with commands & narrative
+│   ├── HIPAA_CONSIDERATIONS.md        # Compliance notes
+│   ├── PRODUCTION_HARDENING_CHECKLIST.md  # Production readiness items
+│   ├── Known_Limitations.md           # Failure modes & mitigations
+│   └── AI_BUILD_WORKFLOW.md           # AI-assisted development process
 ├── prompts/
-│   └── CLASSIFICATION_PROMPT.md # System prompt for Claude Vision API
+│   └── CLASSIFICATION_PROMPT.md       # System prompt for Claude Vision API
 ├── data/
-│   └── synthetic-faxes/         # Test corpus (synthetic data only)
+│   └── synthetic-faxes/               # Test corpus (synthetic data only)
 ├── src/
-│   ├── backend/                 # API server & classification pipeline
-│   └── frontend/                # React dashboard
+│   ├── backend/                       # FastAPI server & classification pipeline
+│   └── frontend/                      # React + Tailwind dashboard
 ├── scripts/
-│   └── test_classification.py   # Phase 1 validation script
+│   └── test_classification.py         # Phase 1 validation script
 └── .github/
-    └── ISSUE_TEMPLATE/          # Build phase tracking
+└── ISSUE_TEMPLATE/                # Build phase tracking
 ```
 
 ## Build Phases
 
 | Phase | Focus | Duration | Status |
 |-------|-------|----------|--------|
-| 1 | Technical Validation — test Claude Vision against synthetic faxes | 2–3 hrs | ⬜ Not started |
-| 2 | Backend Pipeline — API server, PDF processing, Claude integration | 3–4 hrs | ⬜ Not started |
-| 3 | Frontend Dashboard — React queue view, document detail, upload | 3–4 hrs | ⬜ Not started |
-| 4 | Demo Preparation — polish, narrative, interview materials | 2–3 hrs | ⬜ Not started |
+| 1 | Technical Validation — test Claude Vision against synthetic faxes | 2–3 hrs | ✅ Complete |
+| 2 | Backend Pipeline — API server, PDF processing, Claude integration | 3–4 hrs | ✅ Complete |
+| 3 | Frontend Dashboard — React queue view, document detail, upload | 3–4 hrs | ✅ Complete |
+| 4 | Demo Preparation — polish, deployment, demo materials | 2–3 hrs | ✅ Complete |
 
 ## Important Notes
 
