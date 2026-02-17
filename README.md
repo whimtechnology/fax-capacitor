@@ -4,6 +4,31 @@
 
 Intelligent fax classification and routing for small healthcare practices.
 
+## One-minute overview
+
+### Problem
+Small healthcare practices still triage incoming faxes manually, which creates delays and risk for urgent documents.
+
+### Users
+- Front desk and operations staff who process daily fax volume
+- Practice managers responsible for throughput and reliability
+
+### Workflow
+Ingest PDF fax -> process pages -> classify and extract with Claude -> queue/store structured results -> present prioritized UI for review.
+
+### Value
+- Reduces manual triage time
+- Surfaces urgent/high-priority items earlier
+- Adds structure and consistency without replacing existing fax intake
+
+### Status
+Prototype/MVP in active development using synthetic data only; production hardening items are tracked in `/docs/PRODUCTION_HARDENING_CHECKLIST.md`.
+
+![Architecture diagram](docs/ARCHITECTURE_DIAGRAM.svg)
+
+### Demo (8-10 minutes)
+Use `/docs/DEMO_SCRIPT.md` for copy/paste commands, expected outputs, and a short spoken narrative.
+
 ---
 
 ## What It Does
