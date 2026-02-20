@@ -24,8 +24,6 @@ Ingest PDF fax -> process pages -> classify and extract with Claude -> queue/sto
 ### Status
 Prototype/MVP in active development using synthetic data only; production hardening items are tracked in `/docs/PRODUCTION_HARDENING_CHECKLIST.md`.
 
-![Architecture diagram](docs/ARCHITECTURE_DIAGRAM.svg)
-
 ### Demo (8-10 minutes)
 **Live:** [faxcapacitor.xyz](https://faxcapacitor.xyz)
 
@@ -47,19 +45,9 @@ The practice changes nothing about how they receive faxes. They gain an AI-power
 
 ## Architecture
 
-```
-┌─────────────────┐     ┌────────────────────┐     ┌──────────────────┐
-│   PDF Ingestion  │────▶│  Claude Vision API  │────▶│    Dashboard     │
-│                  │     │                    │     │                  │
-│  • Manual upload │     │  • Classification  │     │  • Priority queue│
-│  • Email watch   │     │  • Field extraction│     │  • PDF preview   │
-│    (Phase 2)     │     │  • Confidence score│     │  • Action buttons│
-└─────────────────┘     └────────────────────┘     └──────────────────┘
-        │                        │                         │
-        ▼                        ▼                         ▼
-   Normalized PDF          Structured JSON            React + Tailwind
-   images for API       (type, fields, priority)     (desktop-first UI)
-```
+
+![Architecture diagram](docs/Fax_Capacitor_Flow_Diagram.png)
+
 
 ## Document Classification Taxonomy
 
@@ -104,7 +92,7 @@ fax-capacitor/
 ├── docs/
 │   ├── PROJECT_PLAN.md                # Full project plan & build sequence
 │   ├── ARCHITECTURE.md                # Technical architecture details
-│   ├── ARCHITECTURE_DIAGRAM.svg       # Visual pipeline diagram
+│   ├── Fax_Capacitor_Flow_Diagram.png # Visual pipeline diagram
 │   ├── CLASSIFICATION_TAXONOMY.md     # Document types & extraction fields
 │   ├── DEMO_SCRIPT.md                 # Demo walkthrough with commands & narrative
 │   ├── HIPAA_CONSIDERATIONS.md        # Compliance notes
