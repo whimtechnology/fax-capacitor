@@ -1,6 +1,10 @@
-# FaxTriage AI
+<p align="center">
+  <img src="docs/Fax_Capacitor_Logo.png" alt="Fax Capacitor Logo" width="150">
+</p>
 
-**Codename: Fax Capacitor**
+# Fax Capacitor 
+
+**Codename: FaxTriage AI**
 
 Intelligent fax classification and routing for small healthcare practices.
 
