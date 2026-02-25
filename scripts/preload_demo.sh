@@ -65,15 +65,15 @@ for pdf in "${pdf_files[@]}"; do
     # Upload and capture HTTP status code
     http_code=$(curl -s -o /dev/null -w "%{http_code}" \
         -X POST \
-        -F "file=@$pdf" \
+        -F "files=@$pdf" \
         "$UPLOAD_ENDPOINT" 2>/dev/null) || http_code="000"
 
     if [[ "$http_code" == "200" || "$http_code" == "201" ]]; then
         echo -e "${GREEN}[PASS]${NC} $filename (HTTP $http_code)"
-        ((success++))
+        ((++success))
     else
         echo -e "${RED}[FAIL]${NC} $filename (HTTP $http_code)"
-        ((failed++))
+        ((++failed))
     fi
 
     # Delay between uploads (skip after last file)
