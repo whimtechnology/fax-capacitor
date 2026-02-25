@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     # Upload limits
     max_file_size_mb: int = 50
 
+    # Demo seeding — auto-populate empty DB with synthetic faxes on startup
+    auto_seed_demo: bool = True
+
     # Server settings
     cors_origins: list[str] = [
         "http://localhost:5173",  # Vite default

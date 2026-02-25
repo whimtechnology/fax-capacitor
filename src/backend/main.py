@@ -6,6 +6,9 @@ Main entry point for the backend server.
 Run with:
     python -m uvicorn src.backend.main:app --reload --port 8000
 """
+import logging
+import threading
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -14,6 +17,13 @@ from fastapi.responses import FileResponse
 from .config import settings
 from .database import init_database
 from .routers import documents, upload, stats
+from .services.demo_seeder import seed_demo_data
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 
 # Initialize the FastAPI app
 app = FastAPI(
@@ -42,6 +52,12 @@ def startup_event():
     """Initialize database and directories on startup."""
     settings.ensure_directories()
     init_database()
+
+    # Auto-seed demo data in background thread (non-blocking)
+    # This ensures health check passes immediately while seeding runs async
+    if settings.auto_seed_demo:
+        thread = threading.Thread(target=seed_demo_data, daemon=True)
+        thread.start()
 
 
 @app.get("/api/health")
