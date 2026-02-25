@@ -2,7 +2,36 @@
 
 This script is designed for a concise live walkthrough of the current prototype.
 
-## Pre-demo setup (2-3 minutes)
+## Live Demo (Recommended)
+
+The easiest way to demo Fax Capacitor is using the live deployment:
+
+**URL:** https://faxcapacitor.xyz
+
+### Pre-load the dashboard
+
+The Railway deployment uses ephemeral storage — the database resets on each deploy. Before presenting, seed the dashboard with synthetic faxes:
+
+```bash
+cd E:\Claude-Workspace\fax-capacitor\fax-capacitor
+./scripts/preload_demo.sh
+```
+
+This uploads all synthetic PDFs from `data/synthetic-faxes/` to the live site. Each upload triggers AI classification, so it takes ~30 seconds to complete.
+
+### Demo flow
+
+1. Open https://faxcapacitor.xyz in your browser
+2. Walk through the prioritized queue, document types, and extracted fields
+3. Show the PDF preview panel and workflow actions
+
+---
+
+## Local Demo (Fallback)
+
+If the live site is unavailable or you need to demo offline, follow these steps.
+
+### Pre-demo setup (2-3 minutes)
 
 1. Open terminal A (backend):
 
