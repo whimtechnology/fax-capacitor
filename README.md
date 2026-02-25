@@ -1,4 +1,4 @@
-<p align="center">
+<p align="left">
   <img src="docs/Fax_Capacitor_Logo.png" alt="Fax Capacitor Logo" width="150">
 </p>
 
